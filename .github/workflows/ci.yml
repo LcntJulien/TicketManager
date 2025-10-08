@@ -1,0 +1,29 @@
+name: CI
+
+on:
+    push:
+        branches:
+            - dev
+        paths-ignore:
+            - '**.md'
+            - '**/.gitignore'
+            - '**/.gitattributes'
+            - 'docs/**'
+    pull_request:
+        branches:
+            - dev
+        paths-ignore:
+            - '**.md'
+            - '**/.gitignore'
+            - '**/.gitattributes'
+            - 'docs/**'
+
+jobs:
+    placeholder:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Placeholder step
+              run: echo "✅ CI pipeline ready, will run real builds/tests later"
