@@ -1,0 +1,6 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Documentation
+    url: https://github.com/LcntJulien/TicketManager/tree/dev/docs
+    about: Check the documentation before opening an issue.
