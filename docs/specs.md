@@ -1,22 +1,24 @@
 # Ticket Manager - Specifications
 
 ## Goal
-Provide a mobile app for managing support tickets, backed by a secure API.
+Provide a mobile application for managing support tickets, powered by a secure and scalable API.
 
-## Functional requirements
-- User registration & login
-- Ticket creation, editing, closing
-- Ticket assignment
+## Functional Requirements
+- User registration & login (JWT authentication)
+- Ticket creation, editing, and closing
+- Ticket assignment to users or teams
 - Filtering & searching tickets
-- Notifications (future)
+- Push notifications (future)
 
-## Non-functional requirements
-- API in C#, scalable, cloud-ready
-- Secure (JWT auth)
-- Database: PostgreSQL
-- Mobile apps: iOS first (SwiftUI), Android later
+## Non-Functional Requirements
+- API built in C# using ASP.NET Core and EF Core
+- PostgreSQL database
+- Secure and scalable (JWT, Azure deployment)
+- Mobile apps: iOS (SwiftUI first), Android (Kotlin later)
+- Code tested via GitHub Actions
 
 ## Constraints
-- Must be deployable on Azure
+- Must be deployable on Azure (App Service + PostgreSQL Flexible Server)
 - CI/CD with GitHub Actions
-- Documentation in English
+- Local environment via Docker Compose (API + PostgreSQL + optional pgAdmin)
+- All documentation written in English
