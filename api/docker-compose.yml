@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  api:
+    build: .
+    container_name: ticketmanager-api
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - .:/src

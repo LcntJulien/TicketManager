@@ -35,6 +35,9 @@ Thumbs.db
 # -----------------------
 bin/
 obj/
+# Ignore local configuration files for all .NET projects
+**/appsettings.*.json
+!**/appsettings.json
 
 # -----------------------
 # Docker (generic developer files)
