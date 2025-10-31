@@ -21,10 +21,30 @@ Thumbs.db
 !.vscode/extensions.json
 
 # -----------------------
-# Editor / IDE caches & settings
+# Editor / IDE
 # -----------------------
-# Visual Studio Code caches and local state
+# Visual Studio Code caches, local state & user files
 .history/
+*.user
+*.suo
+.idea/
+*.DotSettings.user
+
+# -----------------------
+# .NET build artefacts
+# -----------------------
+bin/
+obj/
+
+# -----------------------
+# Docker (generic developer files)
+# -----------------------
+# docker-compose override (local), Docker local build caches
+docker-compose.override.yml
+.docker/
+# local docker envs and secrets
+.env.docker
+# NOTE: I don't ignore Dockerfiles or compose.yml, only local overrides
 
 # -----------------------
 # Logs and temporary files
@@ -43,16 +63,6 @@ yarn-error.log*
 *.bak
 *.tmp
 *.swp
-
-# -----------------------
-# Docker (generic developer files)
-# -----------------------
-# docker-compose override (local), Docker local build caches
-docker-compose.override.yml
-.docker/
-# local docker envs and secrets
-.env.docker
-# NOTE: I don't ignore Dockerfiles or compose.yml, only local overrides
 
 # -----------------------
 # Database dump/exports (local dev)
