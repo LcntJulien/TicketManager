@@ -1,12 +1,25 @@
-version: '3.9'
-
 services:
+  db:
+    image: postgres:16
+    container_name: ticketmanager-db
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
   api:
     build: .
     container_name: ticketmanager-api
+    depends_on:
+      - db
     ports:
       - "8080:8080"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+    env_file:
+      - .env
     volumes:
       - .:/src
+
+volumes:
+  postgres_data:
