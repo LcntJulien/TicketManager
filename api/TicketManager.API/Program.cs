@@ -1,7 +1,18 @@
+using Microsoft.EntityFrameworkCore;
+using TicketManager.Infrastructure.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
+// Get the connection string from .env when on Docker env or appsettings when on local env
+var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION")
+    ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Add EF Core with PostgreSQL
+builder.Services.AddDbContext<TicketManagerDbContext>(options =>
+    options.UseNpgsql(connectionString)
+);
+
 // Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
