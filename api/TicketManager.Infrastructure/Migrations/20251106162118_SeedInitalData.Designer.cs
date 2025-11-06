@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TicketManager.Infrastructure.Data;
@@ -11,9 +12,11 @@ using TicketManager.Infrastructure.Data;
 namespace TicketManager.Infrastructure.Migrations
 {
     [DbContext(typeof(TicketManagerDbContext))]
-    partial class TicketManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251106162118_SeedInitalData")]
+    partial class SeedInitalData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
