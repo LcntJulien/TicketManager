@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TicketManager.Infrastructure.Data;
@@ -11,9 +12,11 @@ using TicketManager.Infrastructure.Data;
 namespace TicketManager.Infrastructure.Migrations
 {
     [DbContext(typeof(TicketManagerDbContext))]
-    partial class TicketManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251113182109_ImplementBaseDomainModels")]
+    partial class ImplementBaseDomainModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace TicketManager.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("RoleTicket", b =>
-                {
-                    b.Property<int>("AssignedRolesId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TicketId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("AssignedRolesId", "TicketId");
-
-                    b.HasIndex("TicketId");
-
-                    b.ToTable("TicketRoleAssignments", (string)null);
-                });
 
             modelBuilder.Entity("TicketManager.Core.Entities.RefreshToken", b =>
                 {
@@ -52,9 +40,7 @@ namespace TicketManager.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsRevoked")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false);
+                        .HasColumnType("boolean");
 
                     b.Property<string>("ReplacedByToken")
                         .HasColumnType("text");
@@ -82,9 +68,7 @@ namespace TicketManager.Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -124,13 +108,16 @@ namespace TicketManager.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AssignedToId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("ClosedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("CreatedById")
+                    b.Property<int>("CreatedById")
                         .HasColumnType("integer");
 
                     b.Property<string>("Description")
@@ -143,9 +130,7 @@ namespace TicketManager.Infrastructure.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasDefaultValue("Backlog");
+                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -155,9 +140,16 @@ namespace TicketManager.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("AssignedToId");
+
                     b.HasIndex("CreatedById");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Tickets");
 
@@ -197,9 +189,7 @@ namespace TicketManager.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("LastLogin")
                         .HasColumnType("timestamp with time zone");
@@ -247,21 +237,6 @@ namespace TicketManager.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("TicketUser", b =>
-                {
-                    b.Property<int>("AssignedTicketsId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("AssignedUsersId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("AssignedTicketsId", "AssignedUsersId");
-
-                    b.HasIndex("AssignedUsersId");
-
-                    b.ToTable("TicketAssignments", (string)null);
-                });
-
             modelBuilder.Entity("UserRoles", b =>
                 {
                     b.Property<int>("RolesId")
@@ -294,21 +269,6 @@ namespace TicketManager.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("RoleTicket", b =>
-                {
-                    b.HasOne("TicketManager.Core.Entities.Role", null)
-                        .WithMany()
-                        .HasForeignKey("AssignedRolesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TicketManager.Core.Entities.Ticket", null)
-                        .WithMany()
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("TicketManager.Core.Entities.RefreshToken", b =>
                 {
                     b.HasOne("TicketManager.Core.Entities.User", "User")
@@ -322,27 +282,24 @@ namespace TicketManager.Infrastructure.Migrations
 
             modelBuilder.Entity("TicketManager.Core.Entities.Ticket", b =>
                 {
-                    b.HasOne("TicketManager.Core.Entities.User", "CreatedBy")
-                        .WithMany("CreatedTickets")
-                        .HasForeignKey("CreatedById")
+                    b.HasOne("TicketManager.Core.Entities.User", "AssignedTo")
+                        .WithMany()
+                        .HasForeignKey("AssignedToId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.Navigation("CreatedBy");
-                });
-
-            modelBuilder.Entity("TicketUser", b =>
-                {
-                    b.HasOne("TicketManager.Core.Entities.Ticket", null)
+                    b.HasOne("TicketManager.Core.Entities.User", "CreatedBy")
                         .WithMany()
-                        .HasForeignKey("AssignedTicketsId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("TicketManager.Core.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("AssignedUsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Tickets")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("AssignedTo");
+
+                    b.Navigation("CreatedBy");
                 });
 
             modelBuilder.Entity("UserRoles", b =>
@@ -362,9 +319,9 @@ namespace TicketManager.Infrastructure.Migrations
 
             modelBuilder.Entity("TicketManager.Core.Entities.User", b =>
                 {
-                    b.Navigation("CreatedTickets");
-
                     b.Navigation("RefreshTokens");
+
+                    b.Navigation("Tickets");
                 });
 #pragma warning restore 612, 618
         }
